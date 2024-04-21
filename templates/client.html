@@ -6,8 +6,30 @@
     <title>Nuevo Cliente</title>
 </head>
 <body>
-    <h1>Registrar Nuevo Cliente</h1>
-    <form method="porst">
+    <h1>Datos Cliente</h1>
+
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>Zip Code</th>
+            <th>Country</th>
+        </tr>
+        {% for client in clients %}
+        <tr>
+            <td>{{ client[1] }}</td>
+            <td>{{ client[2] }}</td>
+            <td>{{ client[3] }}</td>
+            <td>{{ client[5] }}</td>
+            <td>{{ client[6] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Registrar Nuevo Cliente</h1>
+    <form method="post">
         <label fo="nombre">Nombre:</label><br>
         <input type="text" id="nombre" name="nombre"><br>
         
