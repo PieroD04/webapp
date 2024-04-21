@@ -32,7 +32,20 @@ def show_books():
 def new_client():
     cursor.execute("SELECT * FROM clientes")
     clients = cursor.fetchall()
+
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        email = request.form['email']
+        direccion = request.form['direccion']
+        ciudad = request.form['ciudad']
+        codigo_postal = request.form['codigo_postal']
+        pais = request.form['pais']
+        print(type(nombre))
+        # Insertar los datos del cliente en la base de datos
+        cursor.execute("INSERT INTO clientes (nombre, email, direccion, ciudad, codigo_postal, pais) VALUES (%s, %s, %s, %s, %s, %s)", (nombre, email, direccion, ciudad, codigo_postal, pais))
+        db_connection.commit()
     return render_template('client.html', clients=clients)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
