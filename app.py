@@ -28,7 +28,7 @@ def show_books():
     books = cursor.fetchall()
     return render_template('index.html', books=books)
 
-@app.route('/client', methods=['GET', 'POST'])
+@app.route('/client', methods=['POST'])
 def new_client():
     if request.method == 'POST':
         nombre = request.form['nombre']
@@ -37,7 +37,7 @@ def new_client():
         ciudad = request.form['ciudad']
         codigo_postal = request.form['codigo_postal']
         pais = request.form['pais']
-
+        console.log(type(nombre))
         # Insertar los datos del cliente en la base de datos
         cursor.execute("INSERT INTO clientes (nombre, email, direccion, ciudad, codigo_postal, pais) VALUES (%s, %s, %s, %s, %s, %s)", (nombre, email, direccion, ciudad, codigo_postal, pais))
         db_connection.commit()
