@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
 
 # Create Flask app
@@ -14,7 +14,7 @@ db_connection = mysql.connector.connect(
     host="db-libros.mysql.database.azure.com",
     user="Admin123",
     password="321nimdA",
-    database="db_libros"  # Change to your database name
+    database="db_libros" 
 )
 cursor = db_connection.cursor()
 
@@ -27,6 +27,24 @@ def show_books():
     cursor.execute("SELECT * FROM libros")
     books = cursor.fetchall()
     return render_template('index.html', books=books)
+
+@app.route('/client', methods=['GET', 'POST'])
+def new_client():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        email = request.form['email']
+        direccion = request.form['direccion']
+        ciudad = request.form['ciudad']
+        codigo_postal = request.form['codigo_postal']
+        pais = request.form['pais']
+
+        # Insertar los datos del cliente en la base de datos
+        cursor.execute("INSERT INTO clientes (nombre, email, direccion, ciudad, codigo_postal, pais) VALUES (%s, %s, %s, %s, %s, %s)", (nombre, email, direccion, ciudad, codigo_postal, pais))
+        db_connection.commit()
+
+        return redirect(url_for(''))  # Redireccionar a la página principal después de agregar el cliente
+
+    return render_template('client.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
