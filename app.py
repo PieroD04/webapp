@@ -23,7 +23,7 @@ def home():
     return render_template('index.html')
 
 @app.route('/home')
-def home():
+def home_page():
     return render_template('index.html')
 
 @app.route('/catalogo')
@@ -39,11 +39,11 @@ def register():
     return render_template('register.html')
 
 @app.route('/mensaje')
-def login():
+def mensaje():
     return render_template('mensaje.html')
 
 @app.route('/pedido')
-def login():
+def pedido():
     return render_template('pedido.html')
 
 if __name__ == '__main__':
