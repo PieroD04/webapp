@@ -26,6 +26,7 @@ def home():
 def home_page():
     return render_template('index.html')
 
+@app.route('/catalogo')
 def catalogo():
     # Consulta para obtener todas las categorías
     cursor.execute("SELECT * FROM categorias")
