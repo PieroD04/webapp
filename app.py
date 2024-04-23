@@ -54,21 +54,28 @@ def mensaje():
 
 @app.route('/pedido/<int:libro_id>', methods=['GET', 'POST'])
 def pedido(libro_id):
-    if request.method == 'POST':
-        cursor.execute("INSERT INTO pedidos (cliente_id, fecha, estado) VALUES (%s, NOW(), %s)", (1, "pendiente",))
-        db_connection.commit()
-        pedido_id = cursor.lastrowid
-        cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
-        libro = cursor.fetchone()
-        precio_unitario = libro['precio']
-        cursor.execute("INSERT INTO detalles_pedido (pedido_id, libro_id, cantidad, precio_unitario, total) VALUES (%s, %s, 1, %s, %s)", (pedido_id, libro_id, precio_unitario, precio_unitario))
-        db_connection.commit()
-        return redirect(url_for('mensaje'))
+    try:
+        if request.method == 'POST':
+            cursor.execute("INSERT INTO pedidos (cliente_id, fecha, estado) VALUES (%s, NOW(), %s)", (1, "pendiente",))
+            db_connection.commit()
+            pedido_id = cursor.lastrowid
+            cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
+            libro = cursor.fetchone()
+            precio_unitario = libro['precio']
+            cursor.execute("INSERT INTO detalles_pedido (pedido_id, libro_id, cantidad, precio_unitario, total) VALUES (%s, %s, 1, %s, %s)", (pedido_id, libro_id, precio_unitario, precio_unitario))
+            db_connection.commit()
+            return redirect(url_for('mensaje'))
+        else:
+            cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
+            libro = cursor.fetchone()
+            return render_template('pedido.html', libro=libro)
+    except mysql.connector.Error as error:
+        # Handle MySQL errors
+        print("Error executing MySQL query:", error)
+        # Render an error page with the error message
+        return render_template('error.html', message="An error occurred while processing your request.")
 
-    else:
-        cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
-        libro = cursor.fetchone()
-        return render_template('pedido.html', libro=libro)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
