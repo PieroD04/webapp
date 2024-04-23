@@ -73,12 +73,12 @@ def login():
             cursor.execute("SELECT * FROM clientes WHERE email = %s AND contrasena = %s", (email, contrasena,))
             # Fetch one record
             cliente = cursor.fetchone()
-            print(cliente)
             if cliente:
                 # Storage the user id in a session
                 # session['user_id'] = cliente['id']
-                return redirect(url_for('error.html', message=cliente))
-            # If the user does not exist, render the login page again
+                #return redirect(url_for('error.html', message=cliente))
+                # If the user does not exist, render the login page again
+                print(cliente)
             else:
                 message="Usuario o contraseña incorrectos"
                 return render_template('login.html', message=message)
