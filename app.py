@@ -46,7 +46,7 @@ def catalogo():
         return render_template('catalogo.html', libros_por_categoria=libros_por_categoria)
 
 @app.route('/login', methods=['GET', 'POST'])
-def login():
+def login(message=None):
     try:
         # Check if the request method is POST
         if request.method == 'POST':
@@ -113,13 +113,12 @@ def mensaje():
 
 @app.route('/pedido/<int:libro_id>', methods=['GET', 'POST'])
 def pedido(libro_id):
-    if 'user_id' not in session:
-        message = "Por favor inicia sesión para realizar un pedido"
-        return render_template('login.html', message=message)
+    id_usuario = session['user_id']
+    nombre_usuario = session['user_name']
     
     try:
         if request.method == 'POST':
-            cursor.execute("INSERT INTO pedidos (cliente_id, fecha_pedido, estado) VALUES (%s, NOW(), %s)", (session['user_id'], "pendiente",))
+            cursor.execute("INSERT INTO pedidos (cliente_id, fecha_pedido, estado) VALUES (%s, NOW(), %s)", (id_usuario, "pendiente",))
             db_connection.commit()
             pedido_id = cursor.lastrowid
             cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
@@ -131,10 +130,10 @@ def pedido(libro_id):
         else:
             cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
             libro = cursor.fetchone()
-            return render_template('pedido.html', libro=libro)
+            return render_template('pedido.html', libro=libro, nombre_usuario=nombre_usuario)
     except mysql.connector.Error as error:
         # Render an error page with the error message
-        return render_template('error.html', message=error)
+        return render_template('error.html', message=error, nombre_usuario=nombre_usuario)
 
 @app.route('/logout')
 def logout():

@@ -18,7 +18,7 @@
         <ul class="navbar">
             <li><a href="catalogo">Catálogo de Libros</a></li>
             {% if 'user_id' in session %}
-            <li>Hola, {{ nombre_usuario }}</li>
+            <li><a>Hola, {{ nombre_usuario }}</a></li>
             <li><a href="logout">Cerrar Sesión</a></li>
             {% else %}
             <li><a href="login">Iniciar Sesión</a></li>
@@ -55,7 +55,7 @@
                                     <button>Comprar</button>
                                 </a>
                                 {% else %}
-                                <a href="{{ url_for('login') }}">
+                                <a href="{{ url_for('login', message="Por favor inicia sesión para realizar un pedido") }}">
                                     <button>Comprar</button>
                                 </a>
                                 {% endif %}
