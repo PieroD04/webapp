@@ -82,23 +82,26 @@ def login():
         return render_template('error.html', message=error)
 
 
-@app.route('/registro')
+@app.route('/registro', methods=['GET', 'POST'])
 def register():
     try:
-        # Get the data from the form
-        nombre = request.form['nombre']
-        email = request.form['email']
-        contrasena = request.form['contrasena']
-        direccion = request.form['direccion']
-        ciudad = request.form['ciudad']
-        codigo_postal = request.form['codigo_postal']
-        pais = request.form['pais']
-        # Insert the data into the database
-        cursor.execute("INSERT INTO clientes (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena) VALUES (%s, %s, %s)", (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena))
-        # Commit the transaction
-        db_connection.commit()
-        # Redirect to the login page
-        return redirect(url_for('login'))
+        if request.method == 'POST':
+            # Get the data from the form
+            nombre = request.form['nombre']
+            email = request.form['email']
+            contrasena = request.form['contrasena']
+            direccion = request.form['direccion']
+            ciudad = request.form['ciudad']
+            codigo_postal = request.form['codigo_postal']
+            pais = request.form['pais']
+            # Insert the data into the database
+            cursor.execute("INSERT INTO clientes (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena) VALUES (%s, %s, %s)", (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena))
+            # Commit the transaction
+            db_connection.commit()
+            # Redirect to the login page
+            return redirect(url_for('login'))
+        else:
+            return render_template('registro.html')
     except mysql.connector.Error as error:
         # Render an error page with the error message
         return render_template('error.html', message=error)
