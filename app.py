@@ -18,26 +18,29 @@ db_connection = mysql.connector.connect(
 )
 cursor = db_connection.cursor(dictionary=True)
 
+sess = Session()
+sess.init_app(app)
+
 @app.route('/') 
 def home():
-    if 'user_id' in session:
-        nombre_usuario = obtener_nombre_usuario(session['user_id'])
+    if 'user_id' in sess:
+        nombre_usuario = obtener_nombre_usuario(sess['user_id'])
         return render_template('index.html', nombre_usuario=nombre_usuario)
     else:
         return render_template('index.html')
 
 @app.route('/home')
 def home_page():
-    if 'user_id' in session:
-        nombre_usuario = obtener_nombre_usuario(session['user_id'])
+    if 'user_id' in sess:
+        nombre_usuario = obtener_nombre_usuario(sess['user_id'])
         return render_template('index.html', nombre_usuario=nombre_usuario)
     else:
         return render_template('index.html')
 
 @app.route('/catalogo')
 def catalogo():
-    if 'user_id' in session:
-        nombre_usuario = obtener_nombre_usuario(session['user_id'])
+    if 'user_id' in sess:
+        nombre_usuario = obtener_nombre_usuario(sess['user_id'])
     else:
         nombre_usuario = None
     
@@ -65,9 +68,14 @@ def login():
             cursor.execute("SELECT * FROM clientes WHERE email = %s AND contrasena = %s", (email, contrasena,))
             # Fetch one record
             cliente = cursor.fetchone()
-            # If the user exists, redirect to the catalog page
-            return render_template('login.html', message="No hay error hasta aqui")
-        # If the request method is GET, render the login page
+            if cliente:
+                # Storage the user id in a session
+                sess['user_id'] = cliente['id']
+                return redirect(url_for('catalogo'))
+            # If the user does not exist, render the login page again
+            else:
+                message="Usuario o contraseña incorrectos"
+                return render_template('login.html', message=message)
         else:
             return render_template('login.html')
     except mysql.connector.Error as error:
@@ -102,8 +110,8 @@ def register():
 
 @app.route('/mensaje')
 def mensaje():
-    if 'user_id' in session:
-        nombre_usuario = obtener_nombre_usuario(session['user_id'])
+    if 'user_id' in sess:
+        nombre_usuario = obtener_nombre_usuario(sess['user_id'])
     else:
         nombre_usuario = None
 
@@ -111,13 +119,13 @@ def mensaje():
 
 @app.route('/pedido/<int:libro_id>', methods=['GET', 'POST'])
 def pedido(libro_id):
-    if 'user_id' not in session:
+    if 'user_id' not in sess:
         message = "Por favor inicia sesión para realizar un pedido"
         return render_template('login.html', message=message)
     
     try:
         if request.method == 'POST':
-            cursor.execute("INSERT INTO pedidos (cliente_id, fecha_pedido, estado) VALUES (%s, NOW(), %s)", (session['user_id'], "pendiente",))
+            cursor.execute("INSERT INTO pedidos (cliente_id, fecha_pedido, estado) VALUES (%s, NOW(), %s)", (sess['user_id'], "pendiente",))
             db_connection.commit()
             pedido_id = cursor.lastrowid
             cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
@@ -136,7 +144,7 @@ def pedido(libro_id):
 
 @app.route('/logout')
 def logout():
-    session.pop('user_id', None)
+    sess.pop('user_id', None)
     return redirect(url_for('home'))
 
 def obtener_nombre_usuario(user_id):
