@@ -52,9 +52,19 @@ def register():
 def mensaje():
     return render_template('mensaje.html')
 
-@app.route('/pedido')
-def pedido():
-    return render_template('pedido.html')
+@app.route('/pedido/<int:libro_id>', methods=['GET', 'POST'])
+def pedido(libro_id):
+    if request.method == 'POST':
+        cursor.execute("INSERT INTO pedidos (usuario_id, fecha) VALUES (%s, NOW())", (1,))
+        pedido_id = cursor.lastrowid
+        cursor.execute("INSERT INTO detalles_pedido (pedido_id, libro_id, cantidad) VALUES (%s, %s, 1)", (pedido_id, libro_id))
+        db_connection.commit()
+        return redirect(url_for('mensaje'))
+
+    else:
+        cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
+        libro = cursor.fetchone()
+        return render_template('pedido.html', libro=libro)
 
 if __name__ == '__main__':
     app.run(debug=True)

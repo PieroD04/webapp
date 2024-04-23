@@ -45,7 +45,7 @@
                                 <span>Precio</span>
                                 <p>S/. {{ libro.precio }}</p>
                                 <p>Stock: {{ libro.stock }}</p>
-                                <a href="pedido">
+                                <a href="{{ url_for('pedido', libro_id=libro.id) }}">
                                     <button>Comprar</button>
                                 </a>
                             </div>

@@ -11,7 +11,7 @@
 </head>
 <body>
     <header>
-        <a href="home" class = "logo">
+        <a href="home" class="logo">
             <img src="../static/img/bookshop.png" alt="BookShop logo">
             <span class="logo-text">BookShop</span>
         </a>
@@ -23,21 +23,20 @@
     <main>
         <h1>Realizar Pedido</h1>
         <h2>Se está realizando un pedido para la compra de: </h2>
-        <div class ="book-information">
-            <h3>El Gran Gatsby</h3>
-            <p class="author">Autor: F. Scott Fitzgerald</p>
+        <div class="book-information">
+            <h3>{{ libro.titulo }}</h3>
+            <p class="author">Autor: {{ libro.autor }}</p>
             <p class="description">
-                Descripcion: El Gran Gatsby es una novela escrita por el autor estadounidense F. Scott Fitzgerald. Publicada por primera vez en 1925, la historia sigue a un grupo de personajes que viven en Long Island en la década de 1920.
+                Descripción: {{ libro.descripcion }}
             </p>
-            <p class="isbn">ISBN 0-061-96436-0</p>
-            <p class="price">Precio: S/.10.00</p>
+            <p class="isbn">ISBN: {{ libro.isbn }}</p>
+            <p class="price">Precio: S/. {{ libro.precio }}</p>
         </div>
         <div class="confirmacion">
-            <a href="mensaje">
-                <button>Confirmar Pedido</button>
-            </a>
+            <form action="" method="post">
+                <input type="submit" value="Confirmar Pedido">
+            </form>
         </div>
-
     </main>
     <footer>
         <p class="copyright">&copy; BookShop 2024 - Todos los derechos reservados.</p>
