@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
 
 def obtener_nombre_usuario(user_id):
@@ -24,6 +24,10 @@ app = Flask(
 )
 app.secret_key = 'bookshop56420'
 
+session = dict()
+session['user_id'] = None
+session['user_name'] = None
+
 # Connect to MySQL database
 db_connection = mysql.connector.connect(
     host="db-libros.mysql.database.azure.com",
@@ -36,16 +40,16 @@ cursor = db_connection.cursor(dictionary=True)
 @app.route('/') 
 @app.route('/home')
 def home():
-    if 'user_id' in session:
-        nombre_usuario = obtener_nombre_usuario(session['user_id'])
+    if session['user_id']:
+        nombre_usuario = session['user_name']
         return render_template('index.html', nombre_usuario=nombre_usuario)
     else:
         return render_template('index.html')
 
 @app.route('/catalogo')
 def catalogo():
-    if 'user_id' in session:
-        nombre_usuario = obtener_nombre_usuario(session['user_id'])
+    if session['user_id']:
+        nombre_usuario = session['user_name']
     else:
         nombre_usuario = None
     
@@ -79,10 +83,9 @@ def login():
             cliente = cursor.fetchone()
             if cliente:
                 # Storage the user id in a session
-                # session['user_id'] = cliente['id']
-                #return redirect(url_for('error.html', message=cliente))
-                # If the user does not exist, render the login page again
-                print(cliente)
+                session['user_id'] = cliente['id']
+                session['user_name'] = cliente['nombre']
+                return redirect(url_for('catalogo'))
             else:
                 message="Usuario o contraseña incorrectos"
                 return render_template('login.html', message=message)
@@ -154,7 +157,8 @@ def pedido(libro_id):
 
 @app.route('/logout')
 def logout():
-    session.pop('user_id', None)
+    session['user_id'] = None
+    session['user_name'] = None
     return redirect(url_for('home'))
 
 

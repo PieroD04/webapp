@@ -17,7 +17,7 @@
         </a>
         <ul class="navbar">
             <li><a href="catalogo">Catálogo de Libros</a></li>
-            {% if 'user_id' in session %}
+            {% if session['user_id'] != None %}
             <li>Hola, {{ nombre_usuario }}</li>
             <li><a href="logout">Cerrar Sesión</a></li>
             {% else %}
