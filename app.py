@@ -10,13 +10,13 @@ app = Flask(
 
 
 # Connect to MySQL database
-# db_connection = mysql.connector.connect(
-#     host="db-libros.mysql.database.azure.com",
-#     user="Admin123",
-#     password="321nimdA",
-#     database="db_libros" 
-# )
-# cursor = db_connection.cursor()
+db_connection = mysql.connector.connect(
+    host="db-libros.mysql.database.azure.com",
+    user="Admin123",
+    password="321nimdA",
+    database="db_libros" 
+)
+cursor = db_connection.cursor()
 
 @app.route('/') 
 def home():
