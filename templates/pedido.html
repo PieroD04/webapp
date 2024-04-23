@@ -36,6 +36,7 @@
             </p>
             <p class="isbn">ISBN: {{ libro.isbn }}</p>
             <p class="price">Precio: S/. {{ libro.precio }}</p>
+            <img src="{{ libro.imagen }}" height="350px" alt="{{ libro.titulo }}">
         </div>
         <div class="confirmacion">
             <form method="post">

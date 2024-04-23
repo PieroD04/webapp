@@ -70,7 +70,7 @@ def login(message=None):
                 message="Usuario o contraseña incorrectos"
                 return render_template('login.html', message=message)
         else:
-            return render_template('login.html')
+            return render_template('login.html', message=message)
     except mysql.connector.Error as error:
         # Render an error page with the error message
         return render_template('error.html', message=error)
