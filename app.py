@@ -70,7 +70,11 @@ def login():
             email = request.form['email']
             contrasena = request.form['contrasena']
             # Check if the email and password are correct
-            cursor.execute("SELECT * FROM clientes WHERE email = %s AND contrasena = %s", (email, contrasena,))
+            try:
+                cursor.execute("SELECT * FROM clientes WHERE email = %s AND contrasena = %s", (email, contrasena,))
+            except mysql.connector.Error as error:
+                print(error)
+
             # Fetch one record
             cliente = cursor.fetchone()
             if cliente:
