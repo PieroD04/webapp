@@ -16,7 +16,7 @@ db_connection = mysql.connector.connect(
     password="321nimdA",
     database="db_libros" 
 )
-cursor = db_connection.cursor()
+cursor = db_connection.cursor(dictionary=True)
 
 @app.route('/') 
 def home():
@@ -26,9 +26,18 @@ def home():
 def home_page():
     return render_template('index.html')
 
-@app.route('/catalogo')
 def catalogo():
-    return render_template('catalogo.html')
+    # Consulta para obtener todas las categorías
+    cursor.execute("SELECT * FROM categorias")
+    categorias = cursor.fetchall()
+
+    # Consulta para obtener los libros por categoría
+    libros_por_categoria = {}
+    for categoria in categorias:
+        cursor.execute("SELECT * FROM libros WHERE categoria_id = %s", (categoria['id'],))
+        libros_por_categoria[categoria['nombre']] = cursor.fetchall()
+
+    return render_template('catalogo.html', libros_por_categoria=libros_por_categoria)
 
 @app.route('/login')
 def login():
