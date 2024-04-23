@@ -22,6 +22,7 @@ app = Flask(
     template_folder='templates',
     static_folder='static'
 )
+app.secret_key = 'bookshop56420'
 
 # Connect to MySQL database
 db_connection = mysql.connector.connect(
@@ -74,8 +75,8 @@ def login():
             cliente = cursor.fetchone()
             if cliente:
                 # Storage the user id in a session
-                session['user_id'] = cliente['id']
-                return redirect(url_for('catalogo'))
+                # session['user_id'] = cliente['id']
+                return redirect(url_for('error', message=cliente))
             # If the user does not exist, render the login page again
             else:
                 message="Usuario o contraseña incorrectos"
