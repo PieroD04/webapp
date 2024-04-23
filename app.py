@@ -1,5 +1,20 @@
-from flask import Flask, session, render_template, request, redirect, url_for
+from flask import Flask, Session, render_template, request, redirect, url_for
 import mysql.connector
+
+def obtener_nombre_usuario(user_id):
+    try:
+        # Obtain the user name from the database
+        cursor.execute("SELECT nombre FROM clientes WHERE id = %s", (user_id,))
+        # Fetch one record
+        usuario = cursor.fetchone()
+        # Return the user name
+        if usuario:
+            return usuario['nombre']
+        else:
+            return None
+    except mysql.connector.Error as error:
+        # Render an error page with the error message
+        return render_template('error.html', message=error)
 
 # Create Flask app
 app = Flask(
@@ -19,18 +34,12 @@ db_connection = mysql.connector.connect(
 cursor = db_connection.cursor(dictionary=True)
 
 sess = Session()
+
 sess.init_app(app)
 
 @app.route('/') 
-def home():
-    if 'user_id' in sess:
-        nombre_usuario = obtener_nombre_usuario(sess['user_id'])
-        return render_template('index.html', nombre_usuario=nombre_usuario)
-    else:
-        return render_template('index.html')
-
 @app.route('/home')
-def home_page():
+def home():
     if 'user_id' in sess:
         nombre_usuario = obtener_nombre_usuario(sess['user_id'])
         return render_template('index.html', nombre_usuario=nombre_usuario)
@@ -146,21 +155,6 @@ def pedido(libro_id):
 def logout():
     sess.pop('user_id', None)
     return redirect(url_for('home'))
-
-def obtener_nombre_usuario(user_id):
-    try:
-        # Obtain the user name from the database
-        cursor.execute("SELECT nombre FROM clientes WHERE id = %s", (user_id,))
-        # Fetch one record
-        usuario = cursor.fetchone()
-        # Return the user name
-        if usuario:
-            return usuario['nombre']
-        else:
-            return None
-    except mysql.connector.Error as error:
-        # Render an error page with the error message
-        return render_template('error.html', message=error)
 
 
 
