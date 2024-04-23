@@ -1,3 +1,5 @@
 Flask==2.1.0
 Werkzeug==2.0.2
 mysql-connector-python==8.0.28
+Flask-Session==0.4.0
+redis==4.0.0

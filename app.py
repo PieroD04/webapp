@@ -1,5 +1,8 @@
 from flask import Flask, session, render_template, request, redirect, url_for
+from flask_session import Session
+from redis import Redis
 import mysql.connector
+import secrets
 
 def obtener_nombre_usuario(user_id):
     try:
@@ -23,6 +26,13 @@ app = Flask(
     static_folder='static'
 )
 
+app.secret_key = secrets.token_hex(16)
+
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_REDIS'] = Redis(host='localhost', port=6379)
+
+# Initialize Flask-Session
+Session(app)
 
 # Connect to MySQL database
 db_connection = mysql.connector.connect(
