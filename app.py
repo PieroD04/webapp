@@ -18,33 +18,33 @@ db_connection = mysql.connector.connect(
 )
 cursor = db_connection.cursor()
 
-# Route to display books
-@app.route('/')
-# def index():
-#     return render_template('index.html')    
-def show_books():
-    #Query database to get book information
-    cursor.execute("SELECT * FROM libros")
-    books = cursor.fetchall()
-    return render_template('index.html', books=books)
+@app.route('/') 
+def home():
+    return render_template('index.html')
 
-@app.route('/client', methods=['GET', 'POST'])
-def new_client():
-    cursor.execute("SELECT * FROM clientes")
-    clients = cursor.fetchall()
+@app.route('/home')
+def home():
+    return render_template('index.html')
 
-    if request.method == 'POST':
-        nombre = request.form['nombre']
-        email = request.form['email']
-        direccion = request.form['direccion']
-        ciudad = request.form['ciudad']
-        codigo_postal = request.form['codigo_postal']
-        pais = request.form['pais']
-        # Insertar los datos del cliente en la base de datos
-        cursor.execute("INSERT INTO clientes (nombre, email, direccion, ciudad, codigo_postal, pais) VALUES (%s, %s, %s, %s, %s, %s)", (nombre, email, direccion, ciudad, codigo_postal, pais))
-        db_connection.commit()
-    return render_template('client.html', clients=clients)
+@app.route('/catalogo')
+def catalogo():
+    return render_template('catalogo.html')
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/registro')
+def register():
+    return render_template('register.html')
+
+@app.route('/mensaje')
+def login():
+    return render_template('mensaje.html')
+
+@app.route('/pedido')
+def login():
+    return render_template('pedido.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
