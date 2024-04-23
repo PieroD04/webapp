@@ -1,20 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import mysql.connector
-
-def obtener_nombre_usuario(user_id):
-    try:
-        # Obtain the user name from the database
-        cursor.execute("SELECT nombre FROM clientes WHERE id = %s", (user_id,))
-        # Fetch one record
-        usuario = cursor.fetchone()
-        # Return the user name
-        if usuario:
-            return usuario
-        else:
-            return None
-    except mysql.connector.Error as error:
-        # Render an error page with the error message
-        return render_template('error.html', message=error)
 
 # Create Flask app
 app = Flask(
@@ -24,9 +9,9 @@ app = Flask(
 )
 app.secret_key = 'bookshop56420'
 
-session = dict()
-session['user_id'] = 0
-session['user_name'] = None
+#session = dict()
+#session['user_id'] = 0
+#session['user_name'] = None
 
 # Connect to MySQL database
 db_connection = mysql.connector.connect(
@@ -40,19 +25,14 @@ cursor = db_connection.cursor(dictionary=True)
 @app.route('/') 
 @app.route('/home')
 def home():
-    if session['user_id'] != 0:
+    if session['user_id']:
         nombre_usuario = session['user_name']
         return render_template('index.html', nombre_usuario=nombre_usuario)
     else:
         return render_template('index.html')
 
 @app.route('/catalogo')
-def catalogo():
-    if session['user_id'] != 0:
-        nombre_usuario = session['user_name']
-    else:
-        nombre_usuario = None
-    
+def catalogo():    
     # Consulta para obtener todas las categorías
     cursor.execute("SELECT * FROM categorias")
     categorias = cursor.fetchall()
@@ -63,7 +43,11 @@ def catalogo():
         cursor.execute("SELECT * FROM libros WHERE categoria_id = %s", (categoria['id'],))
         libros_por_categoria[categoria['nombre']] = cursor.fetchall()
 
-    return render_template('catalogo.html', libros_por_categoria=libros_por_categoria, nombre_usuario=nombre_usuario)
+    if session['user_id']:
+        nombre_usuario = session['user_name']
+        return render_template('catalogo.html', libros_por_categoria=libros_por_categoria, nombre_usuario=nombre_usuario)
+    else:
+        return render_template('catalogo.html', libros_por_categoria=libros_por_categoria)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -123,16 +107,17 @@ def register():
 
 @app.route('/mensaje')
 def mensaje():
-    if session['user_id'] != 0:
-        nombre_usuario = obtener_nombre_usuario(session['user_id'])
+    if session['user_id']:
+        nombre_usuario = session['user_name']
+        return render_template('mensaje.html', nombre_usuario=nombre_usuario)
     else:
-        nombre_usuario = None
+        return render_template('mensaje.html')
 
-    return render_template('mensaje.html', nombre_usuario=nombre_usuario)
+    
 
 @app.route('/pedido/<int:libro_id>', methods=['GET', 'POST'])
 def pedido(libro_id):
-    if session['user_id'] != 0:
+    if not session['user_id']:
         message = "Por favor inicia sesión para realizar un pedido"
         return render_template('login.html', message=message)
     
@@ -157,10 +142,8 @@ def pedido(libro_id):
 
 @app.route('/logout')
 def logout():
-    session['user_id'] = 0
-    session['user_name'] = None
+    session.clear()
     return redirect(url_for('home'))
-
 
 
 if __name__ == '__main__':
