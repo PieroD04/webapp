@@ -64,19 +64,9 @@ def login():
             # Check if the email and password are correct
             cursor.execute("SELECT * FROM clientes WHERE email = %s AND contrasena = %s", (email, contrasena,))
             # Fetch one record
-            try:
-                cliente = cursor.fetchone()
-            except:
-                cliente = None 
+            cliente = cursor.fetchone()
             # If the user exists, redirect to the catalog page
-            if cliente:
-                # Storage the user id in a session
-                session['user_id'] = cliente['id']
-                return redirect(url_for('catalogo'))
-            # If the user does not exist, render the login page again
-            else:
-                message="Usuario o contraseña incorrectos"
-                return render_template('login.html', message=message)
+            return render_template('login.html', message="No hay error hasta aqui")
         # If the request method is GET, render the login page
         else:
             return render_template('login.html')
