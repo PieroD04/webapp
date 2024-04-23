@@ -25,7 +25,7 @@ app = Flask(
 app.secret_key = 'bookshop56420'
 
 session = dict()
-session['user_id'] = None
+session['user_id'] = 0
 session['user_name'] = None
 
 # Connect to MySQL database
@@ -40,7 +40,7 @@ cursor = db_connection.cursor(dictionary=True)
 @app.route('/') 
 @app.route('/home')
 def home():
-    if session['user_id']:
+    if session['user_id'] != 0:
         nombre_usuario = session['user_name']
         return render_template('index.html', nombre_usuario=nombre_usuario)
     else:
@@ -48,7 +48,7 @@ def home():
 
 @app.route('/catalogo')
 def catalogo():
-    if session['user_id']:
+    if session['user_id'] != 0:
         nombre_usuario = session['user_name']
     else:
         nombre_usuario = None
@@ -113,7 +113,7 @@ def register():
             # Commit the transaction
             db_connection.commit()
             # Redirect to the login page
-            message="Usuario registrado correctamente. Pasa a Iniciar Sesión."
+            message="Usuario registrado correctamente. Pasa a iniciar sesión."
             return render_template('register.html', message=message)
         else:
             return render_template('register.html')
@@ -123,7 +123,7 @@ def register():
 
 @app.route('/mensaje')
 def mensaje():
-    if 'user_id' in session:
+    if session['user_id'] != 0:
         nombre_usuario = obtener_nombre_usuario(session['user_id'])
     else:
         nombre_usuario = None
@@ -132,7 +132,7 @@ def mensaje():
 
 @app.route('/pedido/<int:libro_id>', methods=['GET', 'POST'])
 def pedido(libro_id):
-    if 'user_id' not in session:
+    if session['user_id'] != 0:
         message = "Por favor inicia sesión para realizar un pedido"
         return render_template('login.html', message=message)
     
@@ -157,7 +157,7 @@ def pedido(libro_id):
 
 @app.route('/logout')
 def logout():
-    session['user_id'] = None
+    session['user_id'] = 0
     session['user_name'] = None
     return redirect(url_for('home'))
 
