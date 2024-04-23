@@ -56,6 +56,7 @@ def mensaje():
 def pedido(libro_id):
     if request.method == 'POST':
         cursor.execute("INSERT INTO pedidos (cliente_id, fecha, estado) VALUES (%s, NOW(), %s)", (1, "pendiente",))
+        db_connection.commit()
         pedido_id = cursor.lastrowid
         cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
         libro = cursor.fetchone()
