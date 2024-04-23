@@ -57,7 +57,10 @@ def pedido(libro_id):
     if request.method == 'POST':
         cursor.execute("INSERT INTO pedidos (usuario_id, fecha) VALUES (%s, NOW())", (1,))
         pedido_id = cursor.lastrowid
-        cursor.execute("INSERT INTO detalles_pedido (pedido_id, libro_id, cantidad) VALUES (%s, %s, 1)", (pedido_id, libro_id))
+        cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
+        libro = cursor.fetchone()
+        precio_unitario = libro['precio']
+        cursor.execute("INSERT INTO detalles_pedido (pedido_id, libro_id, cantidad, precio_unitario, total) VALUES (%s, %s, 1, %s, %s)", (pedido_id, libro_id, precio_unitario, precio_unitario))
         db_connection.commit()
         return redirect(url_for('mensaje'))
 
