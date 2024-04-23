@@ -1,0 +1,68 @@
+h1{
+    font-size: 3em;
+    color: #333;
+    text-align: center;
+    margin: 20px;
+}
+
+h2{
+    font-size: 2em;
+    color: #333;
+    text-align: center;
+    margin: 20px;
+}
+
+h3{
+    font-size: 1.5em;
+    color: #333;
+    margin: 20px;
+}
+
+h4{
+    font-size: 1.2em;
+    color: #333;
+    margin: 20px;
+}
+
+.book span{
+    font-weight: bold;
+}
+
+.catalogue{
+    margin: 20px;
+}
+
+.books{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.book{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 590px;
+
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 10px;
+    
+    text-align: justify;
+}
+
+button{
+    width: 200px;
+    margin: 20px;
+    background-color: #333;
+    color: white;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+button:hover{
+    background-color: #555;
+}

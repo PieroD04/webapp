@@ -3,31 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Catalog</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="icon" href="logo.ico">
+    <title>BookShop - Página de Inicio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="../static/css/index.css">
 </head>
 <body>
-    <h1>Book Catalog</h1>
-    <table>
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Description</th>
-        </tr>
-        {% for book in books %}
-        <tr>
-            <td>{{ book[1] }}</td>
-            <td>{{ book[2] }}</td>
-            <td>{{ book[3] }}</td>
-            <td>{{ book[5] }}</td>
-            <td>{{ book[6] }}</td>
-            <td>{{ book[7] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <header>
+        <a href="index.html" class = "logo">
+            <img src="bookshop.png" alt="BookShop logo">
+            <span class="logo-text">BookShop</span>
+        </a>
+        <ul class="navbar">
+            <li><a href="catalogo.html">Catálogo de Libros</a></li>
+            <li><a href="login.html">Iniciar Sesión</a></li>
+        </ul>
+    </header>
+    <main>
+        <div class="content">
+            <h1>Bienvenido a BookShop</h1>
+            <h2>Descubre nuestra selección de libros</h2>
+            <p>Explora nuestra amplia gama de libros en diferentes categorías.</p>
+            <p>¡Encuentra tu próximo libro favorito hoy!</p>
+        </div>
+    </main>
+    <footer>
+        <p class="copyright">&copy; BookShop 2024 - Todos los derechos reservados.</p>
+    </footer>
 </body>
 </html>

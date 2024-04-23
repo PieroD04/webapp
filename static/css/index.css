@@ -1,0 +1,38 @@
+main{
+  background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('library.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  
+  height: calc(100vh - 64px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content{
+  transform: translate(0, -25%);
+}
+
+.content h1{
+  color: white;
+  font-size: 3rem;
+  text-align: center;
+  padding: 10px;
+}
+
+.content h2{
+  color: white;
+  font-size: 2rem;
+  text-align: center;
+  padding: 10px;
+}
+
+.content p{
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 10px;
+}
