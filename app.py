@@ -62,7 +62,7 @@ def login():
             email = request.form['email']
             contrasena = request.form['contrasena']
             # Check if the email and password are correct
-            cursor.execute("SELECT id FROM clientes WHERE email = %s AND contrasena = %s", (email, contrasena,))
+            cursor.execute("SELECT * FROM clientes WHERE email = %s AND contrasena = %s", (email, contrasena,))
             # Fetch one record
             cliente = cursor.fetchone()
             # If the user exists, redirect to the catalog page
@@ -95,7 +95,7 @@ def register():
             codigo_postal = request.form['codigo_postal']
             pais = request.form['pais']
             # Insert the data into the database
-            cursor.execute("INSERT INTO clientes (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena) VALUES (%s, %s, %s)", (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena))
+            cursor.execute("INSERT INTO clientes (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena) VALUES (%s, %s, %s, %s, %s, %s, %s)", (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena))
             # Commit the transaction
             db_connection.commit()
             # Redirect to the login page
@@ -157,9 +157,8 @@ def obtener_nombre_usuario(user_id):
         else:
             return None
     except mysql.connector.Error as error:
-        # In case of an error, print the error message
-        print("Error al obtener el nombre de usuario:", error)
-        return None
+        # Render an error page with the error message
+        return render_template('error.html', message=error)
 
 
 
