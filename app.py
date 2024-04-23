@@ -55,7 +55,7 @@ def mensaje():
 @app.route('/pedido/<int:libro_id>', methods=['GET', 'POST'])
 def pedido(libro_id):
     if request.method == 'POST':
-        cursor.execute("INSERT INTO pedidos (usuario_id, fecha) VALUES (%s, NOW())", (1,))
+        cursor.execute("INSERT INTO pedidos (cliente_id, fecha, estado) VALUES (%s, NOW(), %s)", (1, "pendiente",))
         pedido_id = cursor.lastrowid
         cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
         libro = cursor.fetchone()
