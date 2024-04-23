@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, session, render_template, request, redirect, url_for
 import mysql.connector
 
 # Create Flask app
@@ -20,14 +20,27 @@ cursor = db_connection.cursor(dictionary=True)
 
 @app.route('/') 
 def home():
-    return render_template('index.html')
+    if 'user_id' in session:
+        nombre_usuario = obtener_nombre_usuario(session['user_id'])
+        return render_template('index.html', nombre_usuario=nombre_usuario)
+    else:
+        return render_template('index.html')
 
 @app.route('/home')
 def home_page():
-    return render_template('index.html')
+    if 'user_id' in session:
+        nombre_usuario = obtener_nombre_usuario(session['user_id'])
+        return render_template('index.html', nombre_usuario=nombre_usuario)
+    else:
+        return render_template('index.html')
 
 @app.route('/catalogo')
 def catalogo():
+    if 'user_id' in session:
+        nombre_usuario = obtener_nombre_usuario(session['user_id'])
+    else:
+        nombre_usuario = None
+        
     # Consulta para obtener todas las categorías
     cursor.execute("SELECT * FROM categorias")
     categorias = cursor.fetchall()
@@ -38,25 +51,76 @@ def catalogo():
         cursor.execute("SELECT * FROM libros WHERE categoria_id = %s", (categoria['id'],))
         libros_por_categoria[categoria['nombre']] = cursor.fetchall()
 
-    return render_template('catalogo.html', libros_por_categoria=libros_por_categoria)
+    return render_template('catalogo.html', libros_por_categoria=libros_por_categoria, nombre_usuario=nombre_usuario)
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    try:
+        # Check if the request method is POST
+        if request.method == 'POST':
+            # Get email and password from the form
+            email = request.form['email']
+            contrasena = request.form['contrasena']
+            # Check if the email and password are correct
+            cursor.execute("SELECT id FROM clientes WHERE email = %s AND contrasena = %s", (email, contrasena,))
+            # Fetch one record
+            cliente = cursor.fetchone()
+            # If the user exists, redirect to the catalog page
+            if cliente:
+                # Storage the user id in a session
+                session['user_id'] = cliente['id']
+                return redirect(url_for('catalogo'))
+            # If the user does not exist, render the login page again
+            else:
+                message="Usuario o contraseña incorrectos"
+                return render_template('login.html', message=message)
+        # If the request method is GET, render the login page
+        else:
+            return render_template('login.html')
+    except mysql.connector.Error as error:
+        # Render an error page with the error message
+        return render_template('error.html', message=error)
+
 
 @app.route('/registro')
 def register():
-    return render_template('register.html')
+    try:
+        # Get the data from the form
+        nombre = request.form['nombre']
+        email = request.form['email']
+        contrasena = request.form['contrasena']
+        direccion = request.form['direccion']
+        ciudad = request.form['ciudad']
+        codigo_postal = request.form['codigo_postal']
+        pais = request.form['pais']
+        # Insert the data into the database
+        cursor.execute("INSERT INTO clientes (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena) VALUES (%s, %s, %s)", (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena))
+        # Commit the transaction
+        db_connection.commit()
+        # Redirect to the login page
+        return redirect(url_for('login'))
+    except mysql.connector.Error as error:
+        # Render an error page with the error message
+        return render_template('error.html', message=error)
 
 @app.route('/mensaje')
 def mensaje():
-    return render_template('mensaje.html')
+    if 'user_id' in session:
+        nombre_usuario = obtener_nombre_usuario(session['user_id'])
+    else:
+        nombre_usuario = None
+
+    return render_template('mensaje.html', nombre_usuario=nombre_usuario)
 
 @app.route('/pedido/<int:libro_id>', methods=['GET', 'POST'])
 def pedido(libro_id):
+    if 'user_id' not in session:
+        message = "Por favor inicia sesión para realizar un pedido"
+        return render_template('login.html', message=message)
+    
     try:
         if request.method == 'POST':
-            cursor.execute("INSERT INTO pedidos (cliente_id, fecha_pedido, estado) VALUES (%s, NOW(), %s)", (1, "pendiente",))
+            cursor.execute("INSERT INTO pedidos (cliente_id, fecha_pedido, estado) VALUES (%s, NOW(), %s)", (session['user_id'], "pendiente",))
             db_connection.commit()
             pedido_id = cursor.lastrowid
             cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
@@ -72,6 +136,27 @@ def pedido(libro_id):
     except mysql.connector.Error as error:
         # Render an error page with the error message
         return render_template('error.html', message=error)
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('home'))
+
+def obtener_nombre_usuario(user_id):
+    try:
+        # Obtain the user name from the database
+        cursor.execute("SELECT nombre FROM clientes WHERE id = %s", (user_id,))
+        # Fetch one record
+        usuario = cursor.fetchone()
+        # Return the user name
+        if usuario:
+            return usuario['nombre']
+        else:
+            return None
+    except mysql.connector.Error as error:
+        # In case of an error, print the error message
+        print("Error al obtener el nombre de usuario:", error)
+        return None
 
 
 

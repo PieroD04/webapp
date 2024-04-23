@@ -23,15 +23,19 @@
     <main>
         <div class="content">
             <h1>Inicio de Sesión</h1>
-            <form action="home"> 
+            <!-- Show message in case an error occurs -->
+            {% if message %}
+            <p>{{ message }}</p>
+            {% endif %}
+            <form action="login"> 
                 <div class="form-input">
                     <label for="email">Correo Electrónico:</label>
                     <input type="email" id="email" name="email" required>
                 </div>
 
                 <div class="form-input">
-                    <label for="email">Contraseña:</label>
-                    <input type="password" id="password" name="password" required>
+                    <label for="contrasena">Contraseña:</label>
+                    <input type="password" id="contrasena" name="contrasena" required>
                 </div>
                 <input type="submit" value="Iniciar Sesión">
             </form>
