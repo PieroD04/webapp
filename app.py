@@ -64,7 +64,10 @@ def login():
             # Check if the email and password are correct
             cursor.execute("SELECT * FROM clientes WHERE email = %s AND contrasena = %s", (email, contrasena,))
             # Fetch one record
-            cliente = cursor.fetchone()
+            try:
+                cliente = cursor.fetchone()
+            except:
+                cliente = None 
             # If the user exists, redirect to the catalog page
             if cliente:
                 # Storage the user id in a session
@@ -82,7 +85,7 @@ def login():
         return render_template('error.html', message=error)
 
 
-@app.route('/registro', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     try:
         if request.method == 'POST':
@@ -99,9 +102,10 @@ def register():
             # Commit the transaction
             db_connection.commit()
             # Redirect to the login page
-            return redirect(url_for('login'))
+            message="Usuario registrado correctamente. Pasa a Iniciar Sesión."
+            return render_template('register.html', message=message)
         else:
-            return render_template('registro.html')
+            return render_template('register.html')
     except mysql.connector.Error as error:
         # Render an error page with the error message
         return render_template('error.html', message=error)
