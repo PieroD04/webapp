@@ -1,37 +1,64 @@
-<main>
-    <h1>Catálogo de Libros</h1>
-    <h2>¡Explora nuestra colección y encuentra tu próximo libro!</h2>
-    <div class="catalogue">
-        <div class="categories">
-            {% for categoria, libros in libros_por_categoria.items() %}
-            <div class="category">
-                <h3>{{ categoria }}</h3>
-                <div class="books">
-                    {% for libro in libros %}
-                    <div class="book">
-                        <div class="book-cover">
-                            <img src="{{ libro.imagen }}" height="100%" alt="libro imagen">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../static/img/logo.ico">
+    <title>BookShop - Catálogo de Libros</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="../static/css/catalogo.css">
+</head>
+<body>
+    <header>
+        <a href="home" class = "logo">
+            <img src="../static/img/bookshop.png" alt="BookShop logo">
+            <span class="logo-text">BookShop</span>
+        </a>
+        <ul class="navbar">
+            <li><a href="catalogo">Catálogo de Libros</a></li>
+            <li><a href="login">Iniciar Sesión</a></li>
+        </ul>
+    </header>
+    <main>
+        <h1>Catálogo de Libros</h1>
+        <h2>¡Explora nuestra colección y encuentra tu próximo libro!</h2>
+        <div class="catalogue">
+            <div class="categories">
+                {% for categoria, libros in libros_por_categoria.items() %}
+                <div class="category">
+                    <h3>{{ categoria }}</h3>
+                    <div class="books">
+                        {% for libro in libros %}
+                        <div class="book">
+                            <div class="book-cover">
+                                <img src="{{ libro.imagen }}" height="100%" alt="libro imagen">
+                            </div>
+                            <div class="book-information">
+                                <h4>{{ libro.titulo }}</h4>
+                                <span>Autor</span>
+                                <p>{{ libro.autor }}</p>
+                                <span>Descripción</span>
+                                <p>{{ libro.descripcion }}</p>
+                                <span>ISBN</span>
+                                <p>{{ libro.isbn }}</p>
+                                <span>Precio</span>
+                                <p>S/. {{ libro.precio }}</p>
+                                <p>Stock: {{ libro.stock }}</p>
+                                <a href="pedido">
+                                    <button>Comprar</button>
+                                </a>
+                            </div>
                         </div>
-                        <div class="book-information">
-                            <h4>{{ libro.titulo }}</h4>
-                            <span>Autor</span>
-                            <p>{{ libro.autor }}</p>
-                            <span>Descripción</span>
-                            <p>{{ libro.descripcion }}</p>
-                            <span>ISBN</span>
-                            <p>{{ libro.isbn }}</p>
-                            <span>Precio</span>
-                            <p>S/. {{ libro.precio }}</p>
-                            <p>Stock: {{ libro.stock }}</p>
-                            <a href="pedido">
-                                <button>Comprar</button>
-                            </a>
-                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-    </div>
-</main>
+    </main>
+    <footer>
+        <p class="copyright">&copy; BookShop 2024 - Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
