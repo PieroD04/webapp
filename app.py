@@ -36,6 +36,11 @@ def home_page():
 
 @app.route('/catalogo')
 def catalogo():
+    if 'user_id' in session:
+        nombre_usuario = obtener_nombre_usuario(session['user_id'])
+    else:
+        nombre_usuario = None
+    
     # Consulta para obtener todas las categorías
     cursor.execute("SELECT * FROM categorias")
     categorias = cursor.fetchall()
