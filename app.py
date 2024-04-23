@@ -9,10 +9,6 @@ app = Flask(
 )
 app.secret_key = 'bookshop56420'
 
-#session = dict()
-#session['user_id'] = 0
-#session['user_name'] = None
-
 # Connect to MySQL database
 db_connection = mysql.connector.connect(
     host="db-libros.mysql.database.azure.com",
@@ -25,7 +21,7 @@ cursor = db_connection.cursor(dictionary=True)
 @app.route('/') 
 @app.route('/home')
 def home():
-    if session['user_id']:
+    if 'user_id' in session:
         nombre_usuario = session['user_name']
         return render_template('index.html', nombre_usuario=nombre_usuario)
     else:
@@ -43,7 +39,7 @@ def catalogo():
         cursor.execute("SELECT * FROM libros WHERE categoria_id = %s", (categoria['id'],))
         libros_por_categoria[categoria['nombre']] = cursor.fetchall()
 
-    if session['user_id']:
+    if 'user_id' in session:
         nombre_usuario = session['user_name']
         return render_template('catalogo.html', libros_por_categoria=libros_por_categoria, nombre_usuario=nombre_usuario)
     else:
@@ -107,7 +103,7 @@ def register():
 
 @app.route('/mensaje')
 def mensaje():
-    if session['user_id']:
+    if 'user_id' in session:
         nombre_usuario = session['user_name']
         return render_template('mensaje.html', nombre_usuario=nombre_usuario)
     else:
@@ -117,7 +113,7 @@ def mensaje():
 
 @app.route('/pedido/<int:libro_id>', methods=['GET', 'POST'])
 def pedido(libro_id):
-    if not session['user_id']:
+    if 'user_id' not in session:
         message = "Por favor inicia sesión para realizar un pedido"
         return render_template('login.html', message=message)
     
