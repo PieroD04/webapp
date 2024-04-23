@@ -50,9 +50,15 @@
                                 <span>Precio</span>
                                 <p>S/. {{ libro.precio }}</p>
                                 <p>Stock: {{ libro.stock }}</p>
+                                {% if 'user_id' in session %}
                                 <a href="{{ url_for('pedido', libro_id=libro.id) }}">
                                     <button>Comprar</button>
                                 </a>
+                                {% else %}
+                                <a href="{{ url_for('login') }}">
+                                    <button>Comprar</button>
+                                </a>
+                                {% endif %}
                             </div>
                         </div>
                         {% endfor %}
