@@ -70,10 +70,8 @@ def pedido(libro_id):
             libro = cursor.fetchone()
             return render_template('pedido.html', libro=libro)
     except mysql.connector.Error as error:
-        # Handle MySQL errors
-        print("Error executing MySQL query:", error)
         # Render an error page with the error message
-        return render_template('error.html', message="An error occurred while processing your request.")
+        return render_template('error.html', message=error)
 
 
 
