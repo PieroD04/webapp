@@ -35,12 +35,16 @@
                 <tr>
                     <th>Número de Pedido</th>
                     <th>Fecha de Pedido</th>
+                    <th>Título del Libro</th>
+                    <th>Precio</th>
                     <th>Estado</th>
                 </tr>
                 {% for pedido in pedidos %}
                 <tr>
                     <td>{{ pedido.id }}</td>
                     <td>{{ pedido.fecha_pedido }}</td>
+                    <td>{{ pedido.titulo }}</td> 
+                    <td>{{ pedido.precio | float_format(2) }}</td>
                     <td>{{ pedido.estado }}</td>
                 </tr>
                 {% endfor %}
