@@ -88,12 +88,19 @@ def register():
             ciudad = request.form['ciudad']
             codigo_postal = request.form['codigo_postal']
             pais = request.form['pais']
-            # Insert the data into the database
-            cursor.execute("INSERT INTO clientes (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena) VALUES (%s, %s, %s, %s, %s, %s, %s)", (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena))
-            # Commit the transaction
-            db_connection.commit()
-            # Redirect to the login page
-            message="Usuario registrado correctamente. Pasa a iniciar sesión."
+            # Verify if email already exists
+            cursor.execute("SELECT * FROM clientes WHERE email = %s", (email,))
+            user = cursor.fetchone()
+            if user:
+                message="El email ingresado ya se encuentra registrado."
+            else:
+                # Insert the data into the database
+                cursor.execute("INSERT INTO clientes (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena) VALUES (%s, %s, %s, %s, %s, %s, %s)", (nombre, email, direccion, ciudad, codigo_postal, pais, contrasena))
+                # Commit the transaction
+                db_connection.commit()
+                # Redirect to the login page
+                message="Usuario registrado correctamente. Pasa a iniciar sesión."
+            
             return render_template('register.html', message=message)
         else:
             return render_template('register.html')
@@ -123,10 +130,15 @@ def pedido(libro_id):
             pedido_id = cursor.lastrowid
             cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
             libro = cursor.fetchone()
-            precio_unitario = libro['precio']
-            cursor.execute("INSERT INTO detalles_pedido (pedido_id, libro_id, cantidad, precio_unitario, total) VALUES (%s, %s, 1, %s, %s)", (pedido_id, libro_id, precio_unitario, precio_unitario))
-            db_connection.commit()
-            return redirect(url_for('mensaje'))
+            if libro['stock'] < 1:
+                return render_template('pedido.html', libro=libro, nombre_usuario=nombre_usuario, message="No hay stock disponible")
+            else:
+                precio_unitario = libro['precio']
+                cursor.execute("INSERT INTO detalles_pedido (pedido_id, libro_id, cantidad, precio_unitario, total) VALUES (%s, %s, 1, %s, %s)", (pedido_id, libro_id, precio_unitario, precio_unitario))
+                # Update stock of book
+                cursor.execute("UPDATE libros SET stock = stock - 1 WHERE id = %s", (libro_id,))
+                db_connection.commit()
+                return redirect(url_for('mensaje'))
         else:
             cursor.execute("SELECT * FROM libros WHERE id = %s", (libro_id,))
             libro = cursor.fetchone()
