@@ -44,7 +44,7 @@
                     <td>{{ pedido.id }}</td>
                     <td>{{ pedido.fecha_pedido }}</td>
                     <td>{{ pedido.titulo }}</td> 
-                    <td>{{ pedido.precio | float_format(2) }}</td>
+                    <td>{{ pedido.precio_unitario | float_format(2) }}</td>
                     <td>{{ pedido.estado }}</td>
                 </tr>
                 {% endfor %}
