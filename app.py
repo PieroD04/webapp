@@ -153,12 +153,11 @@ def historial():
         id_usuario = session['user_id']
         nombre_usuario = session['user_name']
         try:    
-            cursor.execute("SELECT pedidos.id, pedidos.fecha_pedido, libros.titulo, detalles_pedido.precio_unitario, pedidos.estado FROM pedidos INNER JOIN detalles_pedido ON pedidos.id = detalles_pedido.pedido_id INNER JOIN libros ON detalles_pedido.libro_id = libros.id WHERE pedidos.cliente_id = %s", (id_usuario,))
+            cursor.execute("SELECT p.id, p.fecha_pedido, l.titulo, d.precio_unitario as precio, p.estado FROM pedidos p INNER JOIN detalles_pedido d ON p.id = d.pedido_id INNER JOIN libros l ON d.libro_id = l.id WHERE p.cliente_id = %s;", (id_usuario,))
             pedidos = cursor.fetchall()
             return render_template('historial.html', pedidos=pedidos, nombre_usuario=nombre_usuario)
         except mysql.connector.Error as error:
             return render_template('error.html', message=error, nombre_usuario=nombre_usuario)
-        
     else:
         return redirect(url_for('login', message="Inicia sesión para ver tu historial de pedidos"))
 
