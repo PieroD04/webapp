@@ -147,6 +147,17 @@ def pedido(libro_id):
         # Render an error page with the error message
         return render_template('error.html', message=error, nombre_usuario=nombre_usuario)
 
+@app.route('/historial')
+def historial():
+    if 'user_id' in session:
+        id_usuario = session['user_id']
+        nombre_usuario = session['user_name']
+        cursor.execute("SELECT * FROM pedidos WHERE cliente_id = %s", (id_usuario,))
+        pedidos = cursor.fetchall()
+        return render_template('historial.html', pedidos=pedidos, nombre_usuario=nombre_usuario)
+    else:
+        return redirect(url_for('login.html', message="Inicia sesión para ver tu historial de pedidos"))
+
 @app.route('/logout')
 def logout():
     session.clear()

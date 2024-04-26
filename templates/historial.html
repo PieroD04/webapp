@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../static/img/logo.ico">
+    <title>BookShop - Historial de Pedidos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="../static/css/historial.css">
+</head>
+<body>
+    <header>
+        <a href="home" class="logo">
+            <img src="../static/img/bookshop.png" alt="BookShop logo">
+            <span class="logo-text">BookShop</span>
+        </a>
+        <ul class="navbar">
+            {% if 'user_id' in session %}
+            <li><a>Hola, {{ nombre_usuario }}</a></li>
+            <li><a href="historial">Historial de Pedidos</a></li>
+            <li><a href="catalogo">Catálogo de Libros</a></li>
+            <li><a href="logout">Cerrar Sesión</a></li>
+            {% else %}
+            <li><a href="historial">Historial de Pedidos</a></li>
+            <li><a href="catalogo">Catálogo de Libros</a></li>
+            <li><a href="login">Iniciar Sesión</a></li>
+            {% endif %}
+        </ul>
+    </header>
+    <main>
+        <div class="content">
+            <h1>Historial de Pedidos</h1>
+            <table>
+                <tr>
+                    <th>Número de Pedido</th>
+                    <th>Fecha de Pedido</th>
+                    <th>Estado</th>
+                </tr>
+                {% for pedido in pedidos %}
+                <tr>
+                    <td>{{ pedido.id }}</td>
+                    <td>{{ pedido.fecha_pedido }}</td>
+                    <td>{{ pedido.estado }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </main>
+    <footer>
+        <p class="copyright">&copy; BookShop 2024 - Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

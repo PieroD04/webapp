@@ -36,11 +36,14 @@
             <span class="logo-text">BookShop</span>
         </a>
         <ul class="navbar">
-            <li><a href="/catalogo">Catálogo de Libros</a></li>
             {% if 'user_id' in session %}
             <li><a>Hola, {{ nombre_usuario }}</a></li>
+            <li><a href="/historial">Historial de Pedidos</a></li>
+            <li><a href="/catalogo">Catálogo de Libros</a></li>
             <li><a href="/logout">Cerrar Sesión</a></li>
             {% else %}
+            <li><a href="/historial">Historial de Pedidos</a></li>
+            <li><a href="/catalogo">Catálogo de Libros</a></li>
             <li><a href="/login">Iniciar Sesión</a></li>
             {% endif %}
         </ul>
